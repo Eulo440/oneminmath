@@ -109,9 +109,9 @@
       if (!rows.length) { box.replaceChildren(el("p", { class: "muted", text: "No scores yet at this level." })); return; }
       const ol = el("ol", { class: "board" });
       rows.forEach((r) => {
-        const name = r.nickname || "Early player";
+        const name = r.initials || "---";
         const date = new Date(r.created_at).toLocaleDateString(undefined, { month: "short", year: "numeric" });
-        ol.append(el("li", {}, el("span", { class: "who", text: name }), el("span", { class: "when muted small", text: date }), el("span", { class: "pts", text: String(r.score) })));
+        ol.append(el("li", {}, el("span", { class: "who initials-text", text: name }), el("span", { class: "when muted small", text: date }), el("span", { class: "pts", text: String(r.score) })));
       });
       box.replaceChildren(ol);
     } catch (e) {
@@ -122,6 +122,7 @@
 
   // ---------- play ----------
   function startRound() {
+    if (Scores.configured && state.clock === "timed" && !state.table) loadHof(); // fresh top 10 for the initials check
     state.source = createSource({ mode: state.mode, level: state.level, table: state.table, weakKeys: Store.weakFacts(state.mode, state.level) });
     state.correct = 0; state.attempts = 0; state.missed = []; state.typed = ""; state.announced = {};
     state.running = false; state.locked = true;
@@ -232,12 +233,12 @@
     cancelAnimationFrame(state.raf);
     document.body.classList.remove("low-time");
     Store.saveFacts();
-    input().blur();
     const durationMs = Math.round(performance.now() - state.startAt);
     const r = { mode: state.mode, level: state.level, score: state.correct, attempts: state.attempts, missed: state.missed.slice(), durationMs, scored: scored() };
     r.prevBest = r.scored && r.attempts > 0 ? Store.recordRound(r.mode, r.level, r) : Store.best(r.mode, r.level);
     state.lastRound = r;
-    showResults(r);
+    showResults(r); // focuses the initials box (keeping the phone keyboard up) when the score places
+    if (document.activeElement === input()) input().blur();
   }
 
   function quitRound() {
@@ -276,32 +277,74 @@
       })));
     }
     $("printMissedBtn").hidden = !r.missed.length;
-    maybeOfferHof(r);
+    if (!maybeOfferHof(r)) $("againBtn").focus();
+  }
+
+  // ---------- arcade initials ----------
+  const initialsInput = () => $("initialsInput");
+  function renderSlots() {
+    const v = initialsInput().value;
+    const focused = document.activeElement === initialsInput();
+    document.querySelectorAll("#initialsBox .slot").forEach((slot, i) => {
+      slot.textContent = v[i] || "";
+      slot.classList.toggle("filled", !!v[i]);
+      slot.classList.toggle("active", focused && i === Math.min(v.length, 2) && !(v.length === 3 && i !== 2));
+    });
+  }
+  function rankFor(board, score) { return board.filter((b) => b.score >= score).length + 1; }
+
+  function maybeOfferHof(r) {
+    const box = $("hofOffer"); box.hidden = true; $("hofMsg").textContent = ""; $("hofMsg").className = "init-msg";
+    state.offerFor = null;
+    if (!Scores.configured || !r.scored || r.score <= 0) return false;
+    const decide = (board) => {
+      if (state.lastRound !== r || !Scores.qualifies(board, r.score)) return false;
+      state.offerFor = r;
+      $("initRank").textContent = `You're #${rankFor(board, r.score)} for ${OPS[r.mode].name}, Level ${r.level}. Enter your initials`;
+      const i = initialsInput();
+      i.value = Store.initials();
+      i.disabled = false; $("hofAdd").disabled = false; $("hofSkip").disabled = false;
+      box.hidden = false;
+      i.focus({ preventScroll: true });
+      i.select();
+      renderSlots();
+      box.scrollIntoView({ block: "nearest" });
+      return true;
+    };
+    if (state.hofBoard) return decide(state.hofBoard);
+    // board wasn't loaded yet: fetch it, then prompt (tap the boxes to bring up the keyboard)
+    Scores.top(r.mode, r.level, 10).then((rows) => { state.hofBoard = rows; decide(rows); }).catch(() => {});
+    return false;
+  }
+
+  function closeOffer() {
+    $("hofOffer").hidden = true; state.offerFor = null;
+    initialsInput().blur();
     $("againBtn").focus();
   }
 
-  function maybeOfferHof(r) {
-    const box = $("hofOffer"); box.hidden = true; $("hofMsg").textContent = "";
-    if (!Scores.configured || !r.scored || r.score <= 0 || !state.hofBoard) return;
-    const board = state.hofBoard;
-    const qualifies = board.length < 10 || r.score > board[board.length - 1].score;
-    if (!qualifies) return;
-    if (!Store.nickname()) Store.setNickname(Scores.randomNickname());
-    $("nickText").textContent = Store.nickname();
-    $("hofAdd").disabled = false;
-    box.hidden = false;
-  }
-
   async function submitHof() {
-    const r = state.lastRound; if (!r) return;
-    $("hofAdd").disabled = true; $("hofMsg").textContent = "Adding…";
+    const r = state.offerFor; if (!r) return;
+    const v = Scores.cleanInitials(initialsInput().value);
+    const msg = $("hofMsg");
+    if (v.length !== 3) { msg.textContent = "Enter 3 letters."; msg.className = "init-msg warn"; initialsInput().focus(); return; }
+    if (!Scores.initialsOk(v)) { msg.textContent = "Those initials aren't allowed. Try different ones."; msg.className = "init-msg warn"; initialsInput().select(); return; }
+    $("hofAdd").disabled = true; $("hofSkip").disabled = true; initialsInput().disabled = true;
+    msg.textContent = "Saving…"; msg.className = "init-msg";
     try {
-      await Scores.submit({ mode: r.mode, level: r.level, score: r.score, attempts: r.attempts, durationMs: r.durationMs, nickname: Store.nickname() });
-      $("hofMsg").textContent = "Added. Nice work.";
-      setTimeout(() => { $("hofOffer").hidden = true; }, 1200);
+      await Scores.submit({ mode: r.mode, level: r.level, score: r.score, attempts: r.attempts, durationMs: r.durationMs, initials: v });
+      Store.setInitials(v);
+      msg.textContent = `Saved! ${v} is on the Hall of Fame.`; msg.className = "init-msg ok";
+      state.offerFor = null;
+      loadHof();
+      setTimeout(() => { if (!state.offerFor) { $("hofOffer").hidden = true; if (document.body.dataset.view === "results") $("againBtn").focus(); } }, 1400);
     } catch (e) {
-      $("hofMsg").textContent = "Couldn't add it right now. Your score is still saved on this device.";
-      $("hofAdd").disabled = false;
+      const m = String(e && e.message || "");
+      if (/top-10/.test(m)) msg.textContent = "Someone just beat that score, so it didn't make the top 10 this time.";
+      else if (/initials/.test(m)) { msg.textContent = "Those initials aren't allowed. Try different ones."; initialsInput().disabled = false; $("hofAdd").disabled = false; $("hofSkip").disabled = false; initialsInput().focus(); initialsInput().select(); msg.className = "init-msg warn"; return; }
+      else msg.textContent = "Couldn't save right now. Your score is still saved on this device.";
+      msg.className = "init-msg warn";
+      $("hofAdd").disabled = false; $("hofSkip").disabled = false; initialsInput().disabled = false;
     }
   }
 
@@ -366,9 +409,23 @@
     if (vv) { vv.addEventListener("resize", fit); vv.addEventListener("scroll", fit); }
     window.addEventListener("resize", fit);
     fit();
-    $("nickReroll").addEventListener("click", () => { Store.setNickname(Scores.randomNickname()); $("nickText").textContent = Store.nickname(); });
+    const ii = initialsInput();
+    ii.addEventListener("input", () => {
+      const v = Scores.cleanInitials(ii.value);
+      if (ii.value !== v) ii.value = v;
+      $("hofMsg").textContent = ""; $("hofMsg").className = "init-msg";
+      renderSlots();
+    });
+    ii.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); submitHof(); }
+      else if (e.key === "Escape") { e.preventDefault(); closeOffer(); }
+    });
+    ii.addEventListener("focus", renderSlots);
+    ii.addEventListener("blur", () => setTimeout(renderSlots, 0));
+    ["keyup", "click", "select"].forEach((ev) => ii.addEventListener(ev, () => { const n = ii.value.length; if (ii.selectionStart !== ii.selectionEnd && ii.selectionEnd - ii.selectionStart < n) ii.setSelectionRange(n, n); }));
+    $("initialsBox").addEventListener("click", () => { ii.focus(); });
     $("hofAdd").addEventListener("click", submitHof);
-    $("hofSkip").addEventListener("click", () => { $("hofOffer").hidden = true; });
+    $("hofSkip").addEventListener("click", closeOffer);
     $("printNav").addEventListener("click", () => printSheet(false));
     $("printMissedBtn").addEventListener("click", () => printSheet(true));
     $("resetBtn").addEventListener("click", () => {
@@ -383,7 +440,8 @@
         else if (/^\d$/.test(e.key) || e.key === "Backspace" || e.key === "Enter") focusInput();
       } else if (e.key === "Enter" && (e.target === document.body || e.target === document.documentElement)) {
         e.preventDefault();
-        startRound();
+        if (view === "results" && !$("hofOffer").hidden) initialsInput().focus();
+        else startRound();
       }
     });
   }

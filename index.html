@@ -81,7 +81,7 @@
         <section class="card" aria-labelledby="hofTitle">
           <h2 id="hofTitle">Hall of Fame <span class="muted small" id="hofMode"></span></h2>
           <div id="hof" aria-live="polite"></div>
-          <p class="muted small">Just for fun. Entries are optional and use made-up nicknames.</p>
+          <p class="muted small">Top 10 for each operation and level. Make the list and you can add your initials.</p>
         </section>
       </div>
     </section>
@@ -107,24 +107,27 @@
     <!-- RESULTS -->
     <section id="results" class="view" hidden aria-labelledby="resTitle">
       <div class="card results">
+        <div id="hofOffer" hidden class="initials-prompt" role="group" aria-labelledby="initTitle">
+          <p class="arcade-title" id="initTitle">New high score!</p>
+          <p class="init-sub" id="initRank">Enter your initials</p>
+          <div class="initials" id="initialsBox">
+            <span class="slot" aria-hidden="true"></span><span class="slot" aria-hidden="true"></span><span class="slot" aria-hidden="true"></span>
+            <input id="initialsInput" type="text" maxlength="3" inputmode="text" autocapitalize="characters"
+                   autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done"
+                   aria-label="Your initials, 3 letters" aria-describedby="hofMsg">
+          </div>
+          <p class="init-msg" id="hofMsg" aria-live="polite"></p>
+          <div class="nickrow">
+            <button type="button" class="btn primary big" id="hofAdd">Save <span class="kbd" aria-hidden="true">Enter</span></button>
+            <button type="button" class="btn ghost big" id="hofSkip">Skip</button>
+          </div>
+        </div>
         <p class="muted" id="resMode"></p>
         <h1 id="resTitle"><span class="bignum" id="resScore">0</span> <span class="resunit">correct</span></h1>
         <p id="resDetail"></p>
         <p class="vsbest" id="resBest"></p>
         <div id="resSpark"></div>
         <div id="resMissed"></div>
-        <div id="hofOffer" hidden class="offer">
-          <p><strong>That's a Hall of Fame score.</strong> Add it under a made-up nickname?</p>
-          <div class="nickrow">
-            <span class="nick" id="nickText"></span>
-            <button type="button" class="btn ghost small" id="nickReroll">New name</button>
-          </div>
-          <div class="nickrow">
-            <button type="button" class="btn primary" id="hofAdd">Add it</button>
-            <button type="button" class="btn ghost" id="hofSkip">No thanks</button>
-          </div>
-          <p class="muted small" id="hofMsg" aria-live="polite"></p>
-        </div>
         <div class="actions">
           <button type="button" class="btn primary big" id="againBtn">Go again <span class="kbd" aria-hidden="true">Enter</span></button>
           <button type="button" class="btn ghost big" id="menuBtn">Change</button>
@@ -138,7 +141,7 @@
   <section id="sheet" class="sheet" aria-hidden="true"></section>
 
   <footer class="site-footer">
-    <p><strong>Privacy:</strong> no accounts, no ads, no tracking. Your progress is saved only in this browser. The Hall of Fame is opt-in and stores only a made-up nickname and a score.</p>
+    <p><strong>Privacy:</strong> no accounts, no ads, no tracking. Your progress is saved only in this browser. The Hall of Fame is optional and stores only 3 initials and a score.</p>
     <p><button type="button" class="link" id="resetBtn">Clear my progress on this device</button></p>
   </footer>
 

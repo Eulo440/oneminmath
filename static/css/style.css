@@ -133,10 +133,29 @@ input.answer.miss { background: var(--miss-soft); border-color: var(--miss); }
 .vsbest { font-weight: 600; }
 #resSpark .spark { margin: 0 auto; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 18px; }
-.offer { border: 2px dashed var(--line); border-radius: var(--radius); padding: 12px; margin-top: 14px; }
-.offer p { margin: .3em 0; }
 .nickrow { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; margin: 8px 0; }
-.nick { font-weight: 700; font-size: 1.15rem; }
+
+/* arcade initials prompt */
+.initials-prompt { border: 2px solid var(--accent); border-radius: var(--radius); padding: 16px 12px 10px; margin: 0 0 16px; background: linear-gradient(180deg, var(--accent-soft), transparent); }
+.arcade-title { margin: 0; font-family: var(--num); font-size: clamp(1.6rem, 7vw, 2.2rem); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.init-sub { margin: .3em 0 .8em; color: var(--ink-2); }
+.initials { position: relative; display: inline-flex; gap: 12px; cursor: text; }
+.initials .slot {
+  width: 64px; height: 80px; display: grid; place-items: center; border-radius: 12px;
+  background: var(--card); border: 2px solid var(--line); border-bottom-width: 5px;
+  font: 800 2.8rem/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace; color: var(--ink);
+}
+.initials .slot.filled { border-color: var(--ink-2); }
+.initials .slot.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.initials .slot.active:empty::after { content: ""; width: 26px; height: 4px; border-radius: 2px; background: var(--accent); margin-top: 38px; animation: blink 1s steps(1) infinite; }
+/* the real input sits on top, invisible, so taps open the phone keyboard; 16px+ font stops iOS zoom */
+.initials input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; font-size: 24px; border: 0; padding: 0; color: transparent; background: transparent; caret-color: transparent; cursor: text; }
+.initials:focus-within .slot.active { outline: none; }
+.init-msg { min-height: 1.5em; margin: .6em 0 .2em; font-weight: 600; }
+.init-msg.ok { color: var(--good); }
+.init-msg.warn { color: var(--miss); }
+.initials-text { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 800; letter-spacing: .12em; }
+@keyframes blink { 50% { opacity: 0; } }
 
 /* printable worksheet */
 .sheet { display: none; }

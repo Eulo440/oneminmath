@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   const KEY = "omm.v1";
-  const blank = () => ({ bests: {}, history: {}, facts: {}, nickname: null, migrated: false });
+  const blank = () => ({ bests: {}, history: {}, facts: {}, initials: "", migrated: false });
   let data;
   try { data = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || "{}")); }
   catch (e) { data = blank(); }
@@ -52,8 +52,8 @@
         .slice(0, max)
         .map(([k]) => k);
     },
-    nickname() { return data.nickname; },
-    setNickname(n) { data.nickname = n; save(); },
+    initials() { return data.initials || ""; },
+    setInitials(v) { data.initials = v; save(); },
     resetAll() { data = blank(); data.migrated = true; save(); }
   };
   window.OMM = window.OMM || {};
