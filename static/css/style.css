@@ -96,7 +96,7 @@ select { font: inherit; color: var(--ink); background: var(--card); border: 2px 
 .spark circle { fill: var(--accent); }
 .chip { display: inline-block; background: var(--miss-soft); color: var(--ink); border-radius: 999px; padding: 2px 10px; margin: 3px 4px 0 0; font-family: var(--num); font-weight: 600; font-size: .9rem; }
 .board { list-style: none; counter-reset: r; margin: 0 0 8px; padding: 0; }
-.board li { counter-increment: r; display: grid; grid-template-columns: 2em 1fr auto 3em; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.board li { counter-increment: r; display: grid; grid-template-columns: 2em 1fr 3em; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .board li::before { content: counter(r) "."; color: var(--muted); font-variant-numeric: tabular-nums; }
 .board .pts { text-align: right; font-family: var(--num); font-weight: 700; font-variant-numeric: tabular-nums; }
 

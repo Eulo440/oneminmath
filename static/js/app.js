@@ -110,8 +110,7 @@
       const ol = el("ol", { class: "board" });
       rows.forEach((r) => {
         const name = r.initials || "---";
-        const date = new Date(r.created_at).toLocaleDateString(undefined, { month: "short", year: "numeric" });
-        ol.append(el("li", {}, el("span", { class: "who initials-text", text: name }), el("span", { class: "when muted small", text: date }), el("span", { class: "pts", text: String(r.score) })));
+        ol.append(el("li", {}, el("span", { class: "who initials-text", text: name }), el("span", { class: "pts", text: String(r.score) })));
       });
       box.replaceChildren(ol);
     } catch (e) {
