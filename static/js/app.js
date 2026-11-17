@@ -102,7 +102,8 @@
     const tableOk = state.numbers === "whole" && (state.mode === "multiply" || state.mode === "divide");
     $("tableField").hidden = !tableOk || state.clock === "missed";
     if (!tableOk) { state.table = null; $("tableSelect").value = ""; }
-    const extra = state.numbers === "frac" ? " Answer in simplest form (1/2, not 2/4). Whole numbers go in the top box."
+    const extra = state.numbers === "frac" && state.level === 3 && state.clock !== "missed" ? " Answer in simplest form. Mixed numbers like 3 1/2: whole part in the left box."
+      : state.numbers === "frac" ? " Answer in simplest form (1/2, not 2/4). Whole numbers go in the top box."
       : state.numbers === "dec" ? " Use a dot for decimals, like 2.5." : "";
     $("setupHint").className = "hint muted";
     if (missed) {
@@ -570,7 +571,7 @@
       pg.append(el("div", { class: "sheet-head" },
         el("h1", { text: heading }),
         el("p", { text: withAnswers ? "Answer key" : "Name ____________________   Date __________   Correct ____ / " + problems.length }),
-        ...(problems.some((p) => p.kind === "frac") && !withAnswers ? [el("p", { class: "sheet-note", text: "Write each answer in simplest form." })] : [])));
+        ...(problems.some((p) => p.kind === "frac") && !withAnswers ? [el("p", { class: "sheet-note", text: problems.some((p) => p.mixed) ? "Write each answer in simplest form, like 3 1/2 (not 7/2)." : "Write each answer in simplest form." })] : [])));
       const grid = el("ol", { class: "sheet-grid" + (problems.some((p) => p.kind === "frac") ? " fracs" : "") });
       problems.forEach((p) => grid.append(el("li", {}, el("span", {}, ...mathNodes(`${p.text} =`), " "), el("span", { class: "blank" }, ...(withAnswers ? mathNodes(String(p.answer)) : [])))));
       pg.append(grid, el("p", { class: "sheet-foot", text: "oneminmath.com · try it in one minute" }));
