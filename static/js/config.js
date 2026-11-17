@@ -7,5 +7,5 @@ window.OMM_CONFIG = {
   SUPABASE_URL: "https://iguwotwtnkaijacizdsi.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_xhHk1V84dGXr933QlNskSA_NhW0EvzQ",
   // Set to true only after migration_fractions_decimals.sql has been run in Supabase.
-  NEW_MODE_BOARDS: false
+  NEW_MODE_BOARDS: true
 };
