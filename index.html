@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>One Minute Math: calm, quick math practice</title>
-  <meta name="description" content="One-minute math practice for kids and adults. Addition, subtraction, multiplication and division. No ads, no prizes, no sign-up.">
+  <meta name="description" content="One-minute math practice for kids and adults. Addition, subtraction, multiplication, division, fractions and decimals. No ads, no prizes, no sign-up.">
   <meta name="theme-color" content="#141729">
   <meta name="color-scheme" content="dark">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self'; img-src 'self' data: https://oneminmath.goatcounter.com; connect-src 'self' https://*.supabase.co https://oneminmath.goatcounter.com; base-uri 'self'; form-action 'none'">
@@ -18,7 +18,7 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
-    <a class="brand" href="/" aria-label="One Minute Math home"><span class="brand-mark" aria-hidden="true">1′</span> One Minute Math</a>
+    <a class="brand" href="./" aria-label="One Minute Math home"><span class="brand-mark" aria-hidden="true">1′</span> One Minute Math</a>
     <nav>
       <button type="button" class="link" id="printNav">Print a worksheet</button>
     </nav>
@@ -53,6 +53,15 @@
           </div>
         </div>
 
+        <div class="field">
+          <h2 class="label" id="numLabel">3. Numbers</h2>
+          <div class="levels nums" role="group" aria-labelledby="numLabel" id="numSeg">
+            <button type="button" class="level" data-numbers="whole" aria-pressed="true"><strong>Whole numbers</strong><small>7 + 5, 8 × 6</small></button>
+            <button type="button" class="level" data-numbers="frac" aria-pressed="false"><strong>Fractions</strong><small>½ + ¼, ¾ × 8</small></button>
+            <button type="button" class="level" data-numbers="dec" aria-pressed="false"><strong>Decimals</strong><small>2.5 + 1.25</small></button>
+          </div>
+        </div>
+
         <div class="field row">
           <div id="tableField" hidden>
             <label class="label" for="tableSelect">Focus on one table <span class="muted">(practice only)</span></label>
@@ -65,6 +74,14 @@
             <div class="seg" role="group" aria-labelledby="clockLabel" id="clockSeg">
               <button type="button" data-clock="timed" aria-pressed="true">1 minute</button>
               <button type="button" data-clock="practice" aria-pressed="false">Practice (no clock)</button>
+              <button type="button" data-clock="missed" aria-pressed="false">Missed questions</button>
+            </div>
+          </div>
+          <div id="missedField" hidden>
+            <span class="label" id="scopeLabel">Which misses</span>
+            <div class="seg" role="group" aria-labelledby="scopeLabel" id="scopeSeg">
+              <button type="button" data-scope="here" aria-pressed="true">Just this choice</button>
+              <button type="button" data-scope="all" aria-pressed="false">All my misses</button>
             </div>
           </div>
         </div>
@@ -99,6 +116,21 @@
         <label class="sr-only" for="answerInput">Your answer</label>
         <input id="answerInput" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4"
                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+        <div class="fracin" id="fracIn" hidden>
+          <input id="wholeInput" class="answer whole" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" hidden
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="next"
+                 aria-label="Answer, whole number part. Leave it empty if there is none">
+          <div class="fracstack">
+          <input id="numInput" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="next"
+                 aria-label="Answer, top number (numerator)">
+          <span class="fracbar" aria-hidden="true"></span>
+          <input id="denInput" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"
+                 aria-label="Answer, bottom number (denominator). Leave it empty for a whole number">
+        </div>
+        </div>
+        <p class="ans-hint muted" id="ansHint"></p>
         <div class="feedback" id="feedback" aria-live="polite"></div>
         <div class="tally muted" id="tally"></div>
       </div>
@@ -131,6 +163,7 @@
         <div class="actions">
           <button type="button" class="btn primary big" id="againBtn">Go again <span class="kbd" aria-hidden="true">Enter</span></button>
           <button type="button" class="btn ghost big" id="menuBtn">Change</button>
+          <button type="button" class="btn ghost big" id="redoBtn" hidden>Redo my misses</button>
           <button type="button" class="btn ghost big" id="printMissedBtn" hidden>Print these facts</button>
         </div>
       </div>
