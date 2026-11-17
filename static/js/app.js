@@ -195,7 +195,7 @@
     state.correct = 0; state.attempts = 0; state.missed = []; state.typed = ""; state.typedD = ""; state.typedW = ""; state.announced = {};
     state.running = false; state.locked = true;
     state.kind = state.pending ? kindOfProblem(state.pending) : kindOf(state.numbers); state.slot = firstSlot(state.kind);
-    setupAnswerUI();
+    setupAnswerUI(); swapping(false);
     show("play");
     answerEls().forEach((x) => { x.value = ""; x.classList.remove("good", "miss"); });
     input().focus({ preventScroll: true }); // inside the user's tap, so iOS/Android open the number keyboard
@@ -234,7 +234,10 @@
     state.raf = requestAnimationFrame(frame);
   }
 
+  // opacity only: a hidden (display/visibility) box would lose focus and close the phone keyboard
+  const swapping = (on) => { for (const id of ["answerInput", "fracIn", "ansHint"]) $(id).classList.toggle("swap", on); };
   function nextProblem() {
+    swapping(false);
     state.problem = state.pending || state.source.next();
     state.pending = null;
     if (kindOfProblem(state.problem) !== state.kind) switchKind(kindOfProblem(state.problem)); // fallback; normally done in judge()
@@ -263,7 +266,7 @@
     if (dec) ai.removeAttribute("pattern"); else ai.setAttribute("pattern", "[0-9]*"); // iOS: [0-9]* would hide the dot
     ai.maxLength = dec ? 7 : 4;
     ai.classList.toggle("wide", dec);
-    $("ansHint").textContent = state.kind === "mix" ? "Simplest mixed number: 3 1/2. Whole number? Left box only." : frac ? "Simplest form. Whole number? Use the top box only." : dec ? "Use a dot: 2.5 or .5" : "";
+    $("ansHint").textContent = state.kind === "mix" ? "Simplest form: 3 1/2. Whole number? Left box only." : frac ? "Simplest form. Whole number? Use the top box only." : dec ? "Use a dot: 2.5 or .5" : "";
   }
   function renderAnswer() {
     if (state.kind === "mix" && wholeBox().value !== state.typedW) wholeBox().value = state.typedW;
@@ -286,7 +289,7 @@
   function switchKind(kind) {
     state.kind = kind; state.slot = firstSlot(kind); state.typed = ""; state.typedD = ""; state.typedW = "";
     setupAnswerUI();
-    answerEls().forEach((x) => { x.value = ""; x.classList.remove("good", "miss"); });
+    [$("answerInput"), wholeBox(), numBox(), denBox()].forEach((x) => { x.value = ""; x.classList.remove("good", "miss"); });
     if (document.body.dataset.view === "play") input().focus({ preventScroll: true });
   }
   function blurAnswer() { for (const x of [$("answerInput"), numBox(), denBox(), wholeBox()]) if (document.activeElement === x) x.blur(); }
@@ -323,7 +326,7 @@
   function onFracInput(which) {
     const box = which === "whole" ? wholeBox() : which === "num" ? numBox() : denBox();
     if (!state.running || state.locked) { renderAnswer(); return; }
-    let v = box.value.replace(/\D/g, "").slice(0, 3);
+    let v = box.value.replace(/\D/g, "").slice(0, which === "num" ? 4 : 3);
     if (v.length > 1) v = v.replace(/^0+(?=\d)/, "");
     if (box.value !== v) box.value = v;
     if (which === "whole") state.typedW = v; else if (which === "num") state.typed = v; else state.typedD = v;
@@ -418,7 +421,10 @@
     // mixing whole numbers, fractions and decimals), switch now, inside the key event
     if (state.clock === "timed" || state.attempts < state.roundCount) {
       state.pending = state.source.next();
-      if (state.pending && kindOfProblem(state.pending) !== state.kind) switchKind(kindOfProblem(state.pending));
+      if (state.pending && kindOfProblem(state.pending) !== state.kind) {
+        switchKind(kindOfProblem(state.pending));
+        swapping(true); // the new boxes stay invisible until their problem shows (the reveal is for the old one)
+      }
     }
     $("tally").textContent = state.clock === "timed" ? `${state.correct} correct` : "";
     if (state.clock !== "timed") $("timeText").textContent = `${state.attempts}/${state.roundCount}`;

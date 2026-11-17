@@ -25,10 +25,10 @@
   // Number types (section 3 on the setup screen). Whole numbers are the original game, unchanged.
   const NUMBERS = { whole: "Whole numbers", frac: "Fractions", dec: "Decimals" };
   const LEVELS_FRAC = {
-    add:      { 1: "Same bottom number: 2/7 + 3/7", 2: "Different bottoms: 1/2 + 1/4", 3: "Mixed numbers: 94 2/3 + 45 1/2; bigger bottoms" },
-    subtract: { 1: "Same bottom number: 5/8 − 2/8", 2: "Different bottoms: 3/4 − 1/2", 3: "Mixed numbers, with borrowing: 52 1/4 − 18 2/3" },
-    multiply: { 1: "Whole × fraction: 3/4 × 8", 2: "Fraction × fraction: 1/2 × 3/4", 3: "Cancelling, small mixed: 3 × 2 1/2" },
-    divide:   { 1: "By a whole or unit fraction: 1/2 ÷ 3", 2: "Fraction ÷ fraction, unit: 1/6 ÷ 1/3", 3: "Any fractions, small mixed: 4 1/2 ÷ 3" },
+    add:      { 1: "Same bottom number: 2/7 + 3/7", 2: "Different bottoms: 1/2 + 1/4", 3: "Mixed numbers: 94 2/3 + 45 1/2" },
+    subtract: { 1: "Same bottom number: 5/8 − 2/8", 2: "Different bottoms: 3/4 − 1/2", 3: "Mixed, with borrowing: 52 1/4 − 18 2/3" },
+    multiply: { 1: "Whole × fraction: 3/4 × 8", 2: "Fraction × fraction: 1/2 × 3/4", 3: "Cancelling, and 3 × 2 1/2" },
+    divide:   { 1: "By a whole or unit fraction: 1/2 ÷ 3", 2: "Fraction ÷ fraction, unit: 1/6 ÷ 1/3", 3: "Any fractions, and 4 1/2 ÷ 3" },
     smarty:   { 1: "All four, level 1", 2: "All four, level 2", 3: "All four, level 3" }
   };
   const LEVELS_DEC = {

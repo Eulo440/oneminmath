@@ -134,6 +134,7 @@ input.answer.wide { width: 6.2ch; }
 .fracin input.answer.whole { width: 3.4ch; font-size: clamp(2rem, min(11vw, 8vh), 3.2rem); padding: 4px 6px; }
 /* mixed numbers in problems, answers and worksheets: whole part right next to its fraction */
 .mixed { white-space: nowrap; }
+.swap { opacity: 0; }
 .mixed .frac { margin-left: .06em; }
 .fracin input.answer { width: 3.6ch; font-size: clamp(1.6rem, min(9vw, 6.2vh), 2.6rem); padding: 2px 8px; border-bottom-width: 3px; }
 .fracbar { display: block; width: 4.6em; height: 4px; border-radius: 2px; background: var(--ink-2); }
