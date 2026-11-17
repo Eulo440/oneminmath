@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>One Minute Math: calm, quick math practice</title>
-  <meta name="description" content="One-minute math practice for kids and adults. Addition, subtraction, multiplication and division. No ads, no prizes, no sign-up.">
+  <meta name="description" content="One-minute math practice for kids and adults. Addition, subtraction, multiplication, division, fractions and decimals. No ads, no prizes, no sign-up.">
   <meta name="theme-color" content="#141729">
   <meta name="color-scheme" content="dark">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self'; img-src 'self' data: https://oneminmath.goatcounter.com; connect-src 'self' https://*.supabase.co https://oneminmath.goatcounter.com; base-uri 'self'; form-action 'none'">
@@ -18,7 +18,7 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
-    <a class="brand" href="/" aria-label="One Minute Math home"><span class="brand-mark" aria-hidden="true">1′</span> One Minute Math</a>
+    <a class="brand" href="./" aria-label="One Minute Math home"><span class="brand-mark" aria-hidden="true">1′</span> One Minute Math</a>
     <nav>
       <button type="button" class="link" id="printNav">Print a worksheet</button>
     </nav>
@@ -40,6 +40,8 @@
             <button type="button" class="tile" data-mode="subtract" aria-pressed="false"><span class="sym" aria-hidden="true">−</span><span>Subtraction</span></button>
             <button type="button" class="tile" data-mode="multiply" aria-pressed="false"><span class="sym" aria-hidden="true">×</span><span>Multiplication</span></button>
             <button type="button" class="tile" data-mode="divide" aria-pressed="false"><span class="sym" aria-hidden="true">÷</span><span>Division</span></button>
+            <button type="button" class="tile" data-mode="fractions" aria-pressed="false"><span class="sym" aria-hidden="true">½</span><span>Fractions</span></button>
+            <button type="button" class="tile" data-mode="decimals" aria-pressed="false"><span class="sym" aria-hidden="true">.5</span><span>Decimals</span></button>
             <button type="button" class="tile" data-mode="smarty" aria-pressed="false"><span class="sym" aria-hidden="true">±</span><span>Mixed</span></button>
           </div>
         </div>
@@ -99,6 +101,16 @@
         <label class="sr-only" for="answerInput">Your answer</label>
         <input id="answerInput" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4"
                autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+        <div class="fracin" id="fracIn" hidden>
+          <input id="numInput" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="next"
+                 aria-label="Answer, top number (numerator)">
+          <span class="fracbar" aria-hidden="true"></span>
+          <input id="denInput" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"
+                 aria-label="Answer, bottom number (denominator). Leave it empty for a whole number">
+        </div>
+        <p class="ans-hint muted" id="ansHint"></p>
         <div class="feedback" id="feedback" aria-live="polite"></div>
         <div class="tally muted" id="tally"></div>
       </div>
