@@ -300,8 +300,8 @@
           [p.a, p.b] = Math.random() < 0.5 ? [w, x] : [x, w];
         } else if (level === 2) {
           p.a = properFrac(ri(2, 6)); p.b = properFrac(ri(2, 6));
-        } else if (Math.random() < 0.3) { // small whole × small mixed number: 3 × 2 1/2 = 7 1/2
-          const w = ri(2, 6), m = M(ri(1, 9), properFrac(pickOne([2, 3, 4])));
+        } else if (Math.random() < 0.2) { // small whole × small mixed number: 3 × 2 1/2 = 7 1/2
+          const w = ri(2, 6), m = M(ri(1, 5), properFrac(pickOne([2, 3, 4])));
           [p.a, p.b] = Math.random() < 0.5 ? [W(w), m] : [m, W(w)];
         } else { // bigger bottoms; the product must cancel (simplify) at least once
           p.a = properFrac(ri(3, 10)); p.b = properFrac(ri(3, 10));
@@ -318,7 +318,7 @@
           [p.a, p.b] = Math.random() < 0.6 ? [{ n: 1, d: d * m }, { n: 1, d }] : [{ n: 1, d }, { n: 1, d: d * m }]; // 1/6 ÷ 1/3 or 1/3 ÷ 1/6 = 2
         } else if (Math.random() < 0.3) { // small mixed numbers with a neat answer
           if (Math.random() < 0.6) { // 4 1/2 ÷ 3 = 1 1/2  (the answer times the whole)
-            const n = ri(2, 5), q = M(ri(1, 5), properFrac(pickOne([2, 3, 4])));
+            const n = ri(2, 4), q = M(ri(1, 4), properFrac(pickOne([2, 3, 4])));
             p.a = frCalc(q, "×", W(n)); p.b = W(n);
           } else { // 2 1/2 ÷ 1/2 = 5
             const u = { n: 1, d: pickOne([2, 3, 4]) };
