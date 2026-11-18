@@ -220,7 +220,12 @@
     state.startAt = performance.now();
     state.endAt = state.startAt + ROUND_MS;
     nextProblem();
-    if (state.clock === "timed") frame();
+    clearTimeout(state.endTimer);
+    if (state.clock === "timed") {
+      frame();
+      // backup in case animation frames pause (busy or hidden tab): the round still ends on time
+      state.endTimer = setTimeout(() => { if (state.running) frame(); }, ROUND_MS + 50);
+    }
   }
 
   function frame() {
@@ -388,6 +393,7 @@
   }
 
   function judge() {
+    if (state.clock === "timed" && performance.now() >= state.endAt) return endRound(); // no answers after time is up
     const p = state.problem;
     let ok, note = "";
     if (state.kind === "mix") {
