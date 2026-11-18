@@ -202,3 +202,18 @@ input.answer.wide { width: 6.2ch; }
   .sheet-foot { font-size: 9pt; color: #555; margin-top: 4mm; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+/* small phones: keep the setup cards inside the screen (no sideways scroll or zoom-out) */
+.tiles, .levels { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (min-width: 641px) { .tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.tile, .level { min-width: 0; }
+@media (max-width: 400px) {
+  .tile { font-size: .8rem; padding: 10px 4px; }
+  .level { padding: 9px 9px; }
+  .level strong { font-size: .95rem; }
+  .level small { font-size: .75rem; }
+}
+@media (max-width: 360px) {
+  .tile { font-size: .7rem; padding: 10px 2px; }
+  .level { padding: 8px 7px; }
+  .level strong { font-size: .85rem; }
+}
