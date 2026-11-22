@@ -15,8 +15,8 @@
   const readOnly = cfg.READ_ONLY === true;
 
   // Arcade initials: exactly 3 letters A–Z, minus a blocklist.
-  // Must match public.initials_ok() in supabase.sql / migration_initials.sql (the database enforces it too).
-  const BLOCKED = new Set(("ANL,ANS,ASS,AZZ,BBW,BJB,BJS,BUM,BUT,CNT,COC,COK,CRP,CUC,CUK,CUM,CUN,DCK,DIC,DIE,DIK,DMN,DTF,FAG,FAK,FAP,FCK,FFS,FGT,FKN,FKU,FUC,FUG,FUK,FUQ,GAY,GDM,GOK,GUN,HIV,HOE,HOR,JEW,JIZ,JZZ,KIL,KKK,KLL,KNT,KOK,KYK,KYS,LMF,LSD,MLF,NAZ,NGA,NGR,NIG,NSF,PEE,PIS,PMS,PNS,POO,PRN,PSS,PUS,RAP,RET,RPE,RTD,SEX,SHT,SLT,SLU,SPC,SPK,STD,SUC,SUK,SXY,THC,TIT,TRD,TTS,TWT,VAG,WNK,WOG,WTF,XXX").split(","));
+  // Must match public.initials_ok() in supabase.sql / migration_initials_v2.sql (the database enforces it too).
+  const BLOCKED = new Set(("ABO,AHL,ANL,ANS,ANU,ARS,ASS,ASZ,AZS,AZZ,BBW,BCH,BIH,BJB,BJS,BRA,BTT,BUM,BUT,CLT,CNK,CNT,COC,COK,COQ,CRK,CRP,CUC,CUK,CUM,CUN,DCK,DIC,DIE,DIK,DIQ,DIX,DKS,DLD,DMN,DMT,DTF,DUM,DYK,FAG,FAK,FAP,FAT,FCK,FCU,FFS,FGT,FKD,FKK,FKN,FKR,FKU,FML,FRT,FUC,FUG,FUK,FUQ,FUX,FVK,GAY,GDM,GOK,GTF,GUN,GYP,HIV,HOE,HOR,HOS,HRN,JAP,JEW,JFC,JIZ,JZZ,KIL,KKK,KLL,KMS,KNT,KOC,KOK,KOX,KUM,KUN,KYK,KYS,LMA,LMF,LSD,MFK,MLF,MTH,NAZ,NGA,NGG,NGR,NGS,NIG,NIP,NSF,NUD,NZI,PEE,PHK,PIS,PMS,PNS,POO,PRK,PRN,PSS,PUS,PUX,RAP,RET,RPE,RTD,SCK,SEX,SHT,SLT,SLU,SOB,SPC,SPK,SPZ,STD,STF,SUC,SUK,SUX,SXE,SXX,SXY,THC,TIT,TRD,TRN,TTS,TWA,TWT,VAG,VAJ,WHR,WNK,WOG,WOP,WTF,XXX").split(","));
   const cleanInitials = (s) => String(s || "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
   const initialsOk = (s) => /^[A-Z]{3}$/.test(s) && !BLOCKED.has(s);
   // Would this score place in the top 10? Ties go to the earlier score, so it must beat the 10th.
